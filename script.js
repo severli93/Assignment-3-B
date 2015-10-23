@@ -17,6 +17,7 @@ var plot = d3.select('#plot')
 //Consult documentation here https://github.com/mbostock/d3/wiki/SVG-Axes
 var scaleX,scaleY;
 
+
 var axisX0=d3.svg.axis()
     .orient('bottom')
     .tickSize(-height)
@@ -30,7 +31,11 @@ var axisX=d3.svg.axis()
 var axisY=d3.svg.axis()
     .orient('left')
     .tickSize(-width)
-    .tickValues([0,25,50,75,100]);
+    .tickValues([0,25,50,75,100,125]);
+
+var div=d3.select('body').append('div')
+    .attr('class','tooltip')
+    .style('opacity',0);
 
 //Set colors for each kind of Data
 var color1='red';
@@ -95,8 +100,6 @@ function dataLoaded(error, rows){
         .call(axisX);
 
 
-
-
     plot
         .append('g')
         .attr('class','axis axis-y')
@@ -113,6 +116,7 @@ function dataLoaded(error, rows){
         .enter()
         .append('g')
         .attr('class','Countries');
+
     Countries
             .append('line')
             .attr('class','primaryCompletion')
@@ -121,33 +125,47 @@ function dataLoaded(error, rows){
                 return scaleX(d.gdpPerCap)}
             )
             .attr('y1',height)
-
             .attr('x2', function(d)
-             { return scaleX(d.gdpPerCap)})
+             {
+                 return scaleX(d.gdpPerCap)
+             })
 
             .attr('y2', function(d)
-                {if(d.primaryCompletion==undefined)
-                {return height; }else {return scaleY(d.primaryCompletion)}})
+                {if
+                (d.primaryCompletion==undefined)
+                {return height; }else {
+                    return scaleY
+                    (d.primaryCompletion)
+                }})
             .style('stroke',color1)
-        .style('stroke-width','1.5px')
+            .style('stroke-width','1px')
+
             .on('mouseover',function(d){
+                 d3.select(this).style('stroke','#'+color2)
+                .style('stroke-width','10px');
 
+                div.transition()
+                    .duration(10)
+                    .style("opacity",.9);
 
-
-            d3.select(this).style('stroke','#'+color2)
-                .style('stroke-width','10px')
-                Countries
-                .append("svg:title")
-                .text(function(d) { return d.cName; })
-                .style('fill','rgb(100,100,100)')
-                .style('font-size','8px')
+                div .html(d.cName+ ", " + d.primaryCompletion)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 30) + "px");
         })
-        .on('mouseout',function(){
-            d3.select(this).style('stroke',color1)
-                .style('stroke-width','1.5px')
+            .on('mouseout',function(){
+                d3.select(this).style('stroke',color1)
+                .style('stroke-width','1px')
+
+                div.transition()
+                    .duration(400)
+                    .style("opacity", 0)
     })
 
-    Countries
+
+
+
+
+            Countries
         .append('line')
         .attr('class','urbanPopulation')
         .attr('x1', function(d){
@@ -159,17 +177,32 @@ function dataLoaded(error, rows){
         .attr('y2',function(d){if(d.urbanPop==undefined)
         {return height;}else{return scaleY(d.urbanPop)}})
         .style('stroke',color3)
-        .style('stroke-width','1.5px')
+        .style('stroke-width','1px')
         .on('mouseover',function(d){
             d3.select(this).style('stroke',color4)
                 .style('stroke-width','10px')
+
+                    div.transition()
+                        .duration(10)
+                        .style("opacity",.9);
+                    div .html(d.cName+ ", " + d.urbanPop)
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY - 30) + "px");
         })
         .on('mouseout',function(){
             d3.select(this).style('stroke',color3)
-                .style('stroke-width','1.5px')
+                .style('stroke-width','1px')
+
+                    div.transition()
+                        .duration(400)
+                        .style("opacity", 0)
     })
 
-
+    Countries
+        .append("svg:title")
+        .text(function(d) { return d.cName; })
+        .style('fill','rgb(100,100,100)')
+        .style('font-size','8px')
 
 }
 
