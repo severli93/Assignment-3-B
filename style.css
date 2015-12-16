@@ -47,7 +47,7 @@ p{
 }
 
 
-div.tooltip {
+.tooltip {
 	position: absolute;
 	text-align: center;
 	fill:rgb(120,120,120);

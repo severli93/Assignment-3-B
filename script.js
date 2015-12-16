@@ -46,7 +46,7 @@ var color4='orange';
 
 
 //Start importing data
-d3.csv('/data/world_bank_2012.csv', parse, dataLoaded);
+d3.csv('data/world_bank_2012.csv', parse, dataLoaded);
 
 function parse(d){
 
@@ -75,7 +75,7 @@ function dataLoaded(error, rows){
     //with data loaded, we can now mine the data
     var gdpPercapMin=d3.min(rows, function(d){return d.gdpPerCap}),
         gdpPerCapMax=d3.max(rows, function(d){return d.gdpPerCap});
-
+console.log('here')
     //with mined information, set up domain and range for x and y scales
     //Log scale for x, linear scale for y
     //scaleX = d3.scale.log()...
@@ -86,21 +86,23 @@ function dataLoaded(error, rows){
     axisX0.scale(scaleX);
     axisX.scale(scaleX);
     axisY.scale(scaleY);
-
-    plot
+plot
+    .append('g')
+   var plot1=plot
+    plot1
         .append('g')
         .attr('class','axis axis-x0')
         .attr('transform','translate(0,'+height+')')
         .call(axisX0)
         .style('stroke','black')
-   plot
+   plot1
         .append('g')
         .attr('class','axis axis-x')
         .attr('transform','translate(0,'+height+')')
         .call(axisX);
 
 
-    plot
+    plot1
         .append('g')
         .attr('class','axis axis-y')
         .call(axisY)
